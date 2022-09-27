@@ -1,0 +1,19 @@
+echo "export $(cat .env | grep MYSQL_ROOT_PASSWORD)"
+# export MYSQL_ROOT_PASSWORD=MYSQL_ROOT_PASSWORD
+
+# check local port
+docker-compose ps
+
+/usr/local/opt/mysql-client/bin/mysql --host=127.0.0.1 --port=3306 --user=root --password=${MYSQL_ROOT_PASSWORD}
+
+# show show databases
+mysql --host=127.0.0.1 --port=3306 --user=root --password=${MYSQL_ROOT_PASSWORD} -e "show databases;"
+
+# dump
+mysqldump --host=127.0.0.1 --port=3306 --user=root --password=${MYSQL_ROOT_PASSWORD} employees | gzip > ~/localhost.employees.$(date +%Y%m%d-%H%M).sql.gz
+
+# copy to local machine
+scp localhost:~/localhost.employees.$(date +%Y%m%d-%H%M).sql.gz ../mysql_dumps/
+
+# restore
+mysql --host=127.0.0.1 --port=3306 --user=root --password=${MYSQL_ROOT_PASSWORD} employees < ~/mysql_dumps/localhost.employees.$(date +%Y%m%d-%H%M).sql.gz
