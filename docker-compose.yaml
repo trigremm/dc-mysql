@@ -10,4 +10,4 @@ services:
     ports:
       - 3306:3306
     volumes:
-      - ./.docker-compose/mysql:/var/lib/mysql
+      - ./.docker-storage/mysql:/var/lib/mysql

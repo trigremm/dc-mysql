@@ -12,6 +12,9 @@ mysql --host=127.0.0.1 --port=3306 --user=root --password=${MYSQL_ROOT_PASSWORD}
 # dump
 mysqldump --host=127.0.0.1 --port=3306 --user=root --password=${MYSQL_ROOT_PASSWORD} employees | gzip > ~/localhost.employees.$(date +%Y%m%d-%H%M).sql.gz
 
+# list files in home directory
+ls -1at ~/
+
 # copy to local machine
 scp localhost:~/localhost.employees.$(date +%Y%m%d-%H%M).sql.gz ../mysql_dumps/
 
