@@ -8,6 +8,7 @@ docker-compose ps
 
 # show show databases
 mysql --host=127.0.0.1 --port=3306 --user=root --password=${MYSQL_ROOT_PASSWORD} -e "show databases;"
+mysql --host=127.0.0.1 --port=3306 --user=root --password=${MYSQL_ROOT_PASSWORD} -e "create databases employees;"
 
 # dump
 mysqldump --host=127.0.0.1 --port=3306 --user=root --password=${MYSQL_ROOT_PASSWORD} employees | gzip > ~/localhost.employees.$(date +%Y%m%d-%H%M).sql.gz
