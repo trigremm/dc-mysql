@@ -1,3 +1,4 @@
+.docker-storage
+
 .env
 .env.mysql
-.docker-storage
