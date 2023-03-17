@@ -1,4 +1,5 @@
 echo "export $(cat .env.mysql | grep MYSQL_ROOT_PASSWORD)"
+echo "export $(cat .env | grep MYSQL_ROOT_PASSWORD)"
 # export MYSQL_ROOT_PASSWORD=MYSQL_ROOT_PASSWORD
 
 # check local port
