@@ -5,7 +5,7 @@ services:
     env_file:
       - .env
     ports:
-      - 3306:3306
+      - "127.0.0.1:3306:3306"
     restart: always
     volumes:
       - ./.docker_volumes/mysql:/var/lib/mysql
@@ -13,13 +13,27 @@ services:
       test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
       interval: 10s
       timeout: 5s
-      retries: 3
+      retries: 5
+
+  mybackup:
+    image: mysql:8.0.44-debian
+    entrypoint: [""]
+    command: ["bash", "/scripts/backup_db"]
+    env_file:
+      - .env.mybackup
+    working_dir: /backups
+    volumes:
+      - ./.docker_volumes/backups:/backups
+      - ./scripts:/scripts:ro
+    depends_on:
+      mysql:
+        condition: service_healthy
 
   adminer:
     image: adminer:4
     restart: unless-stopped
     ports:
-      - "8080:8080"
+      - "127.0.0.1:8080:8080"
     depends_on:
       mysql:
         condition: service_healthy

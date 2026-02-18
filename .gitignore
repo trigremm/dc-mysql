@@ -1,7 +1,7 @@
 .docker_volumes/
-backups/
 
 .env
+.env.mybackup
 .idea/
 .vscode/
 .DS_Store

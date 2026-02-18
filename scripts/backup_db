@@ -1,0 +1,71 @@
+#!/bin/bash
+# scripts/backup_db
+
+set -e
+
+echo "MySQL Backup Script"
+echo "=================================="
+
+# Check required environment variables
+required_vars=(MYSQL_HOST MYSQL_PORT MYSQL_USER MYSQL_PASSWORD MYSQL_DATABASE)
+for var in "${required_vars[@]}"; do
+    if [[ -z "${!var}" ]]; then
+        echo "Error: Environment variable $var is not set"
+        exit 1
+    fi
+done
+
+# Display connection info (without password)
+echo "Connection Info:"
+echo "Host: ${MYSQL_HOST}"
+echo "Port: ${MYSQL_PORT}"
+echo "User: ${MYSQL_USER}"
+echo "Database: ${MYSQL_DATABASE}"
+echo ""
+
+# Test database connection
+echo "Testing database connection..."
+mysql \
+    -h ${MYSQL_HOST} \
+    -P ${MYSQL_PORT} \
+    -u ${MYSQL_USER} \
+    -p${MYSQL_PASSWORD} \
+    -e "SELECT version();"
+
+echo "Database connection successful"
+echo ""
+
+# Create timestamp
+TIMESTAMP=$(date +%Y%m%d_%H%M%S)
+echo "Creating backups with timestamp: ${TIMESTAMP}"
+
+# 1. SQL dump (human readable, gzipped)
+echo "Creating SQL dump..."
+SQL_DUMP="db_backup_${MYSQL_DATABASE}_${TIMESTAMP}.sql.gz"
+mysqldump \
+    -h ${MYSQL_HOST} \
+    -P ${MYSQL_PORT} \
+    -u ${MYSQL_USER} \
+    -p${MYSQL_PASSWORD} \
+    ${MYSQL_DATABASE} | gzip > "${SQL_DUMP}"
+echo "SQL dump created: ${SQL_DUMP}"
+
+# 2. Schema only dump
+echo "Creating schema-only dump..."
+SCHEMA_DUMP="db_schema_only_${MYSQL_DATABASE}_${TIMESTAMP}.sql"
+mysqldump \
+    -h ${MYSQL_HOST} \
+    -P ${MYSQL_PORT} \
+    -u ${MYSQL_USER} \
+    -p${MYSQL_PASSWORD} \
+    --no-data \
+    ${MYSQL_DATABASE} > "${SCHEMA_DUMP}"
+echo "Schema dump created: ${SCHEMA_DUMP}"
+
+# Show results
+echo ""
+echo "Backup files created:"
+ls -lht *.sql* 2>/dev/null | head -4
+
+echo ""
+echo "Backup completed successfully!"
