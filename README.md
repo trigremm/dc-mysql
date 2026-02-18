@@ -1,20 +1,40 @@
 # dc-mysql
 
-git clone https://github.com/trigremm/dc-mysql.git
+MySQL 8.0 + Adminer (web UI on port 8080).
 
-cd dc-mysql
+## Quick start
 
+```bash
 cp .env.sample .env
-
 vim .env
+make up
+```
 
-sudo docker-compose up -d
+## Commands
 
-# connect to mysql
-sudo apt install mysql-client-core-8.0
+### Lifecycle
 
-export $(cat .env | grep MYSQL_ROOT_PASSWORD)
+```
+make d          # deploy (git pull + recreate)
+make r          # recreate (build + stop + up)
+make up         # start
+make stop       # stop
+make down       # stop and remove
+make ps         # status
+make l          # follow logs
+```
 
-mysql -h 127.0.0.1 -u root -p${MYSQL_ROOT_PASSWORD} -e "show databases"
+### MySQL
 
-mysql -h 127.0.0.1 -u root -p${MYSQL_ROOT_PASSWORD} -e "create database sample"
+Requires: `apt install mysql-client-core-8.0`
+
+```
+make mysql-shell          # connect to mysql shell
+make mysql-databases      # show databases
+make mysql-dump DB=mydb   # dump to backups/mydb_YYYYMMDD_HHMMSS.sql.gz
+make mysql-restore DB=mydb FILE=backups/mydb_20240101_120000.sql.gz
+```
+
+## Adminer
+
+Open http://localhost:8080 — web UI for database management.

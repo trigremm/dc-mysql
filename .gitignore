@@ -1,4 +1,7 @@
-.docker-storage
+.docker_volumes/
+backups/
 
 .env
-.env.mysql
+.idea/
+.vscode/
+.DS_Store
